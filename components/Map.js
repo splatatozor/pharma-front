@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
 import { MapView } from 'expo'
 
 const Marker = MapView.Marker
@@ -7,9 +6,9 @@ const Marker = MapView.Marker
 export default class Map extends Component {
   renderMarkers() {
     return this.props.places.map((place, i) => (
-      <Marker key={i} title={place.name} coordinate={place.coords} />
+      <Marker key={i} title={place.label_pharmacies} coordinate={place.coords} />
     ))
-  }
+  } 
   
   render() {
     const { region } = this.props
