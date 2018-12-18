@@ -9,12 +9,8 @@ import {
   View,
 } from 'react-native';
 import Map from '../components/Map'
-<<<<<<< Updated upstream
-import { MonoText } from '../components/StyledText';
-=======
 import { Location, Permissions, WebBrowser } from 'expo'
 import services from '../services/api'
->>>>>>> Stashed changes
 
 // A placeholder until we get our own location
 const region = {
@@ -55,7 +51,6 @@ export default class HomeScreen extends React.Component {
     const region = { 
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
-      ...deltas
     };
     await this.setState({ region });
   }
