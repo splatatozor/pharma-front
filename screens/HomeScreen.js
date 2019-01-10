@@ -1,29 +1,21 @@
 import React from 'react';
 import {
-  Image,
   Platform,
-  ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import Map from '../components/Map'
 import { Location, Permissions, WebBrowser } from 'expo'
 import services from '../services/api'
+import EventBus from 'react-native-event-bus'
 
-// A placeholder until we get our own location
-const region = {
-  latitude: 45.757351,
-  longitude: 4.833747,
-  latitudeDelta: 0.0922,
-  longitudeDelta: 0.0421
-}
+
 
 export default class HomeScreen extends React.Component {
   state = {
     region: null,
-    pharmacies: []
+    pharmacies: [],
   }
   static navigationOptions = {
     header: null,
@@ -34,9 +26,28 @@ export default class HomeScreen extends React.Component {
     this.getPharmacies()
   }
 
+  componentDidMount() {
+    this.props.navigation.addListener('didFocus', () => {
+      const drug = this.props.navigation.getParam('drug')
+      if (drug){
+        this.setState({
+          drug
+        })
+        this.getPharmacies()
+      }
+    })
+  }
+
   getPharmacies = async () => {
-    const pharmacies = await services.getPharmacies();
-    this.setState({ pharmacies });
+    if (this.state.drug != null){ 
+      const pharmacies = await services.getPharmaciesByDrug(this.state.drug.id);
+      this.setState({pharmacies})
+      EventBus.getInstance().fireEvent("updateMarkers")
+    }
+    else {
+      const pharmacies = await services.getPharmacies();
+      this.setState({pharmacies})
+    }
   };
 
   getLocationAsync = async () => {
@@ -51,6 +62,8 @@ export default class HomeScreen extends React.Component {
     const region = { 
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421
     };
     await this.setState({ region });
   }
@@ -59,7 +72,7 @@ export default class HomeScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Map
-          region={region}
+          region={this.state.region}
           places={this.state.pharmacies}
         />
       </View>
@@ -102,6 +115,7 @@ export default class HomeScreen extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
+    position: 'relative',
     flex: 1,
     backgroundColor: '#fff',
   },

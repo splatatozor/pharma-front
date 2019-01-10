@@ -14,6 +14,26 @@ const getPharmacies = () => {
       })
 }
 
+const getPharmaciesByDrug = drugId => {
+  return api
+    .get(`/pharmacies/drugs/${drugId}`)
+    .then(res =>
+      {
+        return res.data
+      })
+}
+
+const getDrugs = label => {
+  return api
+    .get(`/drugs/label/${label}`)
+    .then(res =>
+      {
+        return res.data
+      })
+}
+
 export default {
     getPharmacies,
+    getPharmaciesByDrug,
+    getDrugs,
 }
